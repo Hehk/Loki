@@ -1,9 +1,5 @@
 generated-docs/
 
-examples/hello
-examples/exit_code_msg
-examples/exit_tag
-
 build
 app
 
@@ -42,3 +38,5 @@ platform/dynhost
 
 # ignore the libapp that is built when making a dynhost
 libapp
+
+src/main

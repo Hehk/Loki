@@ -5,6 +5,6 @@ import pf.Stdout
 main! : {} => Result {} _
 main! = |{}|
 
-    Stdout.line!("Roc loves Zig")
+    Stdout.line!("Loki is getting started!")
 
     Ok({})
