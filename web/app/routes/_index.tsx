@@ -10,9 +10,9 @@ export const meta: MetaFunction = () => {
 export default function Index() {
 	return (
 		<div className="flex h-screen p-4 font-mono">
-			<div className="flex flex-col gap-8">
+			<div className="flex flex-col">
 				<header>
-					<h1 className="leading text-2xl font-bold text-gray-800 dark:text-gray-100">
+					<h1 className="leading text-2xl font-bold text-gray-800 dark:text-gray-100 mb-4">
 						Loki
 					</h1>
 				</header>

@@ -1,0 +1,9 @@
+name = "loki"
+compatibility_date = "2025-01-29"
+main = "./server.ts"
+
+[assets]
+directory = "./build/client"
+
+[observability]
+enabled = true
