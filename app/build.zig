@@ -1,11 +1,8 @@
 const std = @import("std");
-const builtin = @import("builtin");
 
 pub fn build(b: *std.Build) !void {
     const optimize = b.standardOptimizeOption(.{});
     const host_target = b.standardTargetOptions(.{});
-
-    // BUILD THE LEGACY PREBUILT HOST e.g. `platform/libhost.a`, `platform/macos-aarch64.a`
 
     const lib = b.addStaticLibrary(.{
         .name = "host",
@@ -16,20 +13,16 @@ pub fn build(b: *std.Build) !void {
         .pic = true,
     });
 
-    b.installArtifact(lib);
-
-    // BUILD THE SURGICAL PREBUILT HOST e.g. `platform/host.rh`, `platform/linux-x64.rh`
-
-    const exe = b.addExecutable(.{
-        .name = "dynhost",
-        .root_source_file = b.path("host/main.zig"),
+    const raylib_dep = b.dependency("raylib-zig", .{
         .target = host_target,
         .optimize = optimize,
-        .link_libc = true,
     });
 
-    exe.addLibraryPath(b.path("platform/"));
-    exe.linkSystemLibrary("app");
+    const raylib_artifact = raylib_dep.artifact("raylib");
+    const raylib = raylib_dep.module("raylib");
+    lib.linkLibrary(raylib_artifact);
+    lib.root_module.addImport("raylib", raylib);
+    lib.addObjectFile(raylib_artifact.getEmittedBin());
 
-    b.installArtifact(exe);
+    b.installArtifact(lib);
 }

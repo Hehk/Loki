@@ -22,12 +22,25 @@
         linuxInputs = with pkgs;
           lib.optionals stdenv.isLinux [
             valgrind
+            pkgs.xorg.libX11
+            pkgs.libGL
+            pkgs.mesa.drivers
+            pkgs.alsa-lib
+            pkgs.xorg.libXrandr
+            pkgs.xorg.libXi
+            pkgs.xorg.libXcursor
+            pkgs.xorg.libXinerama
+            pkgs.libxkbcommon
+            pkgs.wayland
           ];
 
         darwinInputs = with pkgs;
           lib.optionals stdenv.isDarwin
           (with pkgs.darwin.apple_sdk.frameworks; [
             Security
+            SystemConfiguration
+            CoreGraphics
+            AppKit
           ]);
 
         sharedInputs = (with pkgs; [

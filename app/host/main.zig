@@ -1,6 +1,7 @@
 const std = @import("std");
 const builtin = @import("builtin");
 const str = @import("vendor/str.zig");
+const rl = @import("raylib");
 const RocStr = str.RocStr;
 const RocResult = @import("result.zig").RocResult;
 const testing = std.testing;
@@ -110,6 +111,22 @@ pub fn main() void {
 
     if (exit_code != 0) {
         stderr.print("Exited with code {d}\n", .{exit_code}) catch unreachable;
+    }
+
+    const screenWidth = 800;
+    const screenHeight = 450;
+
+    rl.initWindow(screenWidth, screenHeight, "Loki");
+    defer rl.closeWindow();
+    rl.setTargetFPS(60);
+
+    while (!rl.windowShouldClose()) {
+        rl.beginDrawing();
+        defer rl.endDrawing();
+
+        rl.clearBackground(rl.Color.white);
+
+        rl.drawText("Congrats! You created your first window!", 190, 200, 20, rl.Color.light_gray);
     }
 }
 
