@@ -1,5 +1,8 @@
 # App stub, used to create a prebuilt surgical host
-app [main!] { pf: platform "../platform/main.roc" }
+app [render!, setup!] { pf: platform "../platform/main.roc" }
 
-main! : {} => Result {} _
-main! = |{}| Ok({})
+render! : {} => Result {} _
+render! = |{}| Ok({})
+
+setup! : {} => Result {} _
+setup! = |{}| Ok({})

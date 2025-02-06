@@ -101,22 +101,18 @@ comptime {
     }
 }
 
-extern fn roc__main_for_host_1_exposed(i32) callconv(.C) i32;
+extern fn roc__render_for_host_1_exposed(i32) callconv(.C) i32;
+extern fn roc__setup_for_host_1_exposed(i32) callconv(.C) i32;
 
 pub fn main() void {
     // const stdout = std.io.getStdOut().writer();
     const stderr = std.io.getStdErr().writer();
-
-    const exit_code = roc__main_for_host_1_exposed(0);
-
-    if (exit_code != 0) {
-        stderr.print("Exited with code {d}\n", .{exit_code}) catch unreachable;
+    const setup_exit_code = roc__setup_for_host_1_exposed(0);
+    if (setup_exit_code != 0) {
+        stderr.print("Exited with code {d}\n", .{setup_exit_code}) catch unreachable;
+        return;
     }
 
-    const screenWidth = 800;
-    const screenHeight = 450;
-
-    rl.initWindow(screenWidth, screenHeight, "Loki");
     defer rl.closeWindow();
     rl.setTargetFPS(60);
 
@@ -124,9 +120,11 @@ pub fn main() void {
         rl.beginDrawing();
         defer rl.endDrawing();
 
-        rl.clearBackground(rl.Color.white);
-
-        rl.drawText("Congrats! You created your first window!", 190, 200, 20, rl.Color.light_gray);
+        const exit_code = roc__render_for_host_1_exposed(0);
+        if (exit_code != 0) {
+            stderr.print("Exited with code {d}\n", .{exit_code}) catch unreachable;
+            rl.closeWindow();
+        }
     }
 }
 
@@ -135,4 +133,40 @@ pub fn main() void {
 export fn roc_fx_stdout_line(msg: *RocStr) callconv(.C) void {
     const stdout = std.io.getStdOut().writer();
     stdout.print("{s}\n", .{msg.asSlice()}) catch unreachable;
+}
+
+// RAYLIB exports
+
+export fn roc_fx_init_window(width: i32, height: i32, title: [*c]const u8) callconv(.C) void {
+    rl.initWindow(width, height, title);
+}
+
+export fn roc_fx_set_target_fps(fps: i32) callconv(.C) void {
+    rl.setTargetFPS(fps);
+}
+
+export fn roc_fx_clear_background(color: rl.Color) callconv(.C) void {
+    rl.clearBackground(color);
+}
+
+export fn roc_fx_make_color(r: u8, g: u8, b: u8, a: u8) callconv(.C) rl.Color {
+    return rl.Color.init(r, g, b, a);
+}
+
+export fn roc_fx_display_fps(x: i32, y: i32) callconv(.C) void {
+    rl.drawFPS(x, y);
+}
+
+export fn roc_fx_enable_event_waiting() callconv(.C) void {
+    std.debug.print("Enable Event Waiting", .{});
+    rl.enableEventWaiting();
+}
+
+export fn roc_fx_disable_event_waiting() callconv(.C) void {
+    std.debug.print("Disable Event Waiting", .{});
+    rl.disableEventWaiting();
+}
+
+export fn roc_fx_draw_text(text: [*c]const u8, x: i32, y: i32, font_size: i32, color: rl.Color) callconv(.C) void {
+    rl.drawText(text, x, y, font_size, color);
 }

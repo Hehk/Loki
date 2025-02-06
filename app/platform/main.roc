@@ -1,25 +1,30 @@
-platform ""
-    requires {} { main! : {} => Result {} [Exit I32 Str]_ }
-    exposes [Stdout]
+platform "byfrost"
+    requires {} {
+        render! : {} => Result {} []_,
+        setup! : {} => Result {} Str,
+    }
+    exposes [Stdout, Raylib]
     packages {}
     imports []
-    provides [main_for_host!]
+    provides [render_for_host!, setup_for_host!]
 
 import Stdout
 
-main_for_host! : I32 => I32
-main_for_host! = |_|
-    when main!({}) is
-
+setup_for_host! : I32 => I32
+setup_for_host! = |_|
+    when setup!({}) is
         Ok({}) -> 0
+        Err(msg) ->
+            Stdout.line!(msg)
+            1
 
+render_for_host! : I32 => I32
+render_for_host! = |_|
+    when render!({}) is
+        Ok({}) -> 0
         Err(Exit(code, str)) ->
             if Str.is_empty(str) then
                 code
             else
                 Stdout.line!(str)
                 code
-
-        Err(other) ->
-            Stdout.line!("Program exited early with error: ${Inspect.to_str(other)}")
-            1
