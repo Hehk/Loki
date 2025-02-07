@@ -170,3 +170,41 @@ export fn roc_fx_disable_event_waiting() callconv(.C) void {
 export fn roc_fx_draw_text(text: [*c]const u8, x: i32, y: i32, font_size: i32, color: rl.Color) callconv(.C) void {
     rl.drawText(text, x, y, font_size, color);
 }
+
+const ConfigFlags = extern struct {
+    fullscreen_mode: bool,
+    window_resizable: bool,
+    window_undecorated: bool,
+    window_transparent: bool,
+    msaa_4x_hint: bool,
+    vsync_hint: bool,
+    window_hidden: bool,
+    window_always_run: bool,
+    window_minimized: bool,
+    window_maximized: bool,
+    window_unfocused: bool,
+    window_topmost: bool,
+    window_mouse_passthrough: bool,
+    borderless_windowed_mode: bool,
+    interlaced_hint: bool,
+};
+export fn roc_fx_set_config_flags(fullscreen_mode: bool, window_resizable: bool, window_undecorated: bool, window_transparent: bool, msaa_4x_hint: bool, vsync_hint: bool, window_hidden: bool, window_always_run: bool, window_minimized: bool, window_maximized: bool, window_unfocused: bool, window_topmost: bool, window_mouse_passthrough: bool, borderless_windowed_mode: bool, interlaced_hint: bool) callconv(.C) void {
+    const config_flags = rl.ConfigFlags{
+        .fullscreen_mode = fullscreen_mode,
+        .window_resizable = window_resizable,
+        .window_undecorated = window_undecorated,
+        .window_transparent = window_transparent,
+        .msaa_4x_hint = msaa_4x_hint,
+        .vsync_hint = vsync_hint,
+        .window_hidden = window_hidden,
+        .window_always_run = window_always_run,
+        .window_minimized = window_minimized,
+        .window_maximized = window_maximized,
+        .window_unfocused = window_unfocused,
+        .window_topmost = window_topmost,
+        .window_mouse_passthrough = window_mouse_passthrough,
+        .borderless_windowed_mode = borderless_windowed_mode,
+        .interlaced_hint = interlaced_hint,
+    };
+    rl.setConfigFlags(config_flags);
+}

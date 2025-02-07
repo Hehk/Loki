@@ -1,16 +1,10 @@
 module [drawTree!, text]
 
 import Raylib
-
-Color : {
-    r : U8,
-    g : U8,
-    b : U8,
-    a : U8,
-}
+import Color
 
 Node : [
-    Text { x : I32, y : I32, size : I32, color : Color, content : Str },
+    Text { x : I32, y : I32, size : I32, color : Color.RayColor, content : Str },
 ]
 
 text = |{ x ?? 0, y ?? 0, size ?? 16, color ?? { r: 0, g: 0, b: 0, a: 255 }, content }|
