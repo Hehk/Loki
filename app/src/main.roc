@@ -4,21 +4,19 @@ import byfrost.Window
 import byfrost.Raylib
 import byfrost.Node
 import byfrost.ConfigFlags
-import byfrost.Stdout
+
+import Theme
 
 setup! : {} => Result {} _
 setup! = |{}|
     config_flags = ConfigFlags.make_config_flags { window_resizable: Bool.true }
-    if config_flags.window_resizable then
-        Stdout.line! "Window resizable"
-    else
-        Stdout.line! "Window not resizable"
 
     window = Window.make {
         width: 800,
         height: 600,
         title: "Loki",
         display_fps: Visible (4, 300),
+        background_color: Theme.bg,
         config_flags,
     }
     _ = Window.init! window
@@ -27,9 +25,8 @@ setup! = |{}|
 
 render! : {} => Result {} _
 render! = |{}|
-    Raylib.make_color! 255 255 255 255
-    |> Raylib.clear_background!
+    Raylib.clear_background! Theme.bg
 
-    Node.drawTree! (Node.text { content: "Hello World!" })
+    Node.drawTree! (Node.text { content: "Hello World!", color: Theme.tx, x: 4, y: 4 })
 
     Ok({})
