@@ -1,6 +1,6 @@
 platform "byfrost"
     requires {} {
-        render! : {} => Result {} []_,
+        render! : {} => Result {} Str,
         setup! : {} => Result {} Str,
     }
     exposes [Stdout, Raylib]
@@ -22,9 +22,6 @@ render_for_host! : I32 => I32
 render_for_host! = |_|
     when render!({}) is
         Ok({}) -> 0
-        Err(Exit(code, str)) ->
-            if Str.is_empty(str) then
-                code
-            else
-                Stdout.line!(str)
-                code
+        Err(msg) ->
+            Stdout.line!(msg)
+            1

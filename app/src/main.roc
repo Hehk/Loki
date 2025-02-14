@@ -21,12 +21,18 @@ setup! = |{}|
     }
     _ = Window.init! window
 
+    Raylib.load_font! "Quattrocento" "assets/fonts/Quattrocento-Regular.ttf"
+    Raylib.load_font! "Quattrocento-Bold" "assets/fonts/Quattrocento-Bold.ttf"
+    Raylib.load_font! "Lora" "assets/fonts/Lora-VariableFont_wght.ttf"
+    Raylib.load_font! "Lora-Italic" "assets/fonts/Lora-Italic-VariableFont_wght.ttf"
+
     Ok({})
 
-render! : {} => Result {} _
+render! : {} => Result {} Str
 render! = |{}|
     Raylib.clear_background! Theme.bg
 
-    Node.drawTree! (Node.text { content: "Hello World!", color: Theme.tx, x: 4, y: 4 })
+    tree = Node.text { content: "Hello World!", color: Theme.tx, x: 4, y: 4, font: Some "Quattrocento-Bold", size: 64 }
+    Node.draw_tree! tree
 
     Ok({})

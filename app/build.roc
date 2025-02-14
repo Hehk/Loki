@@ -12,7 +12,7 @@ main! = |_args|
 
     build_stub!(roc, os)?
 
-    Cmd.exec!("zig", ["build"]) ? ErrBuildingZigHost
+    Cmd.exec!("zig", ["build", "-Doptimize=Debug"]) ? ErrBuildingZigHost
 
     Cmd.exec!("cp", ["-f", "zig-out/lib/libhost.a", "./platform/libhost.a"]) ? ErrCopyPrebuiltLegacyHost
 

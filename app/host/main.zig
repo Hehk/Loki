@@ -3,7 +3,7 @@ const builtin = @import("builtin");
 const str = @import("vendor/str.zig");
 const rl = @import("raylib");
 const RocStr = str.RocStr;
-const RocResult = @import("result.zig").RocResult;
+const result = @import("result.zig");
 const testing = std.testing;
 const expectEqual = testing.expectEqual;
 const expect = testing.expect;
@@ -171,6 +171,17 @@ export fn roc_fx_draw_text(text: [*c]const u8, x: i32, y: i32, font_size: i32, c
     rl.drawText(text, x, y, font_size, color);
 }
 
+export fn roc_fx_draw_text_ex(font_name: *RocStr, text: [*c]const u8, x: i32, y: i32, font_size: i32, spacing: f32, color: rl.Color) callconv(.C) void {
+    const font = font_map.get(font_name.asSlice());
+    if (font == null) {
+        std.log.err("Failed to get font from map: {s}\n", .{font_name.asSlice()});
+        return;
+    }
+
+    const position = rl.Vector2.init(@floatFromInt(x), @floatFromInt(y));
+    rl.drawTextEx(font.?, text, position, @floatFromInt(font_size), spacing, color);
+}
+
 const ConfigFlags = extern struct {
     fullscreen_mode: bool,
     window_resizable: bool,
@@ -207,4 +218,27 @@ export fn roc_fx_set_config_flags(fullscreen_mode: bool, window_resizable: bool,
         .interlaced_hint = interlaced_hint,
     };
     rl.setConfigFlags(config_flags);
+}
+
+var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+const allocator = gpa.allocator();
+var font_map = std.hash_map.StringHashMap(rl.Font).init(allocator);
+export fn roc_fx_load_font(font_name: *RocStr, file_name: *RocStr) callconv(.C) void {
+    const name_slice = font_name.asSlice();
+
+    const owned_name = allocator.dupe(u8, name_slice) catch {
+        std.log.err("Failed to copy font name", .{});
+        return;
+    };
+    const c_file_name = @as([*:0]const u8, @ptrCast(file_name.asSlice()));
+    const font = rl.loadFontEx(c_file_name, 256, null) catch {
+        std.log.err("Failed to load font: {s}", .{font_name.asSlice()});
+        return;
+    };
+
+    std.log.info("Adding font {s} to map", .{font_name.asSlice()});
+    font_map.put(owned_name, font) catch {
+        std.log.err("Failed to put font in map: {s}", .{font_name.asSlice()});
+        return;
+    };
 }
